@@ -41,7 +41,8 @@
   "license": "MIT",
   "scripts": {
     "build": "bun build src/main.ts --target node --minify --outfile dist/podbenchmark.mjs --banner '#!/usr/bin/env node' && chmod +x dist/podbenchmark.mjs",
-    "typecheck": "tsgo -p tsconfig.json"
+    "typecheck": "tsgo -p tsconfig.json",
+    "prepublishOnly": "bun run typecheck && bun run build"
   },
   "devDependencies": {
     "@effect/platform-node": "4.0.5",
