@@ -1,0 +1,53 @@
+{
+  "name": "podbenchmark",
+  "version": "0.1.1",
+  "description": "Compare print-on-demand supplier prices from the terminal: product cost, shipping and delivered totals for Printify, Printful, Gelato, Prodigi, CustomCat, Fourthwall and Inkthreadable. Built for sellers, developers and AI agents.",
+  "type": "module",
+  "bin": {
+    "podbenchmark": "dist/podbenchmark.mjs"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "print-on-demand",
+    "pod",
+    "printful",
+    "printify",
+    "gelato",
+    "prodigi",
+    "customcat",
+    "fourthwall",
+    "cli",
+    "price-comparison",
+    "etsy",
+    "shopify",
+    "mcp",
+    "ai-agents"
+  ],
+  "homepage": "https://podbenchmark.com/tools/cli",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FilipLjubic/podbenchmark-cli.git"
+  },
+  "bugs": {
+    "url": "https://podbenchmark.com/about"
+  },
+  "license": "MIT",
+  "scripts": {
+    "build": "bun build src/main.ts --target node --minify --outfile dist/podbenchmark.mjs --banner '#!/usr/bin/env node' && chmod +x dist/podbenchmark.mjs",
+    "typecheck": "tsgo -p tsconfig.json"
+  },
+  "devDependencies": {
+    "@effect/platform-node": "4.0.5",
+    "@types/node": "26.6.5",
+    "@typescript/native-preview": "7.0.0-dev.20260421.2",
+    "effect": "4.0.5",
+    "zod": "4.3.6"
+  }
+}

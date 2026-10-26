@@ -1,0 +1,59 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "podbenchmark",
+  "version": "1.0.2",
+  "description": "Compare print-on-demand (POD) suppliers including Printify, Printful, Gelato, Prodigi, CustomCat and Fourthwall. Find which supplier costs less for T-shirts, hoodies and mugs by comparing product prices, shipping costs, total delivered cost and delivery estimates for your customers' country.",
+  "author": { "name": "Filip Ljubic", "url": "https://podbenchmark.com" },
+  "homepage": "https://podbenchmark.com",
+  "repository": "https://github.com/FilipLjubic/podbenchmark-cli",
+  "keywords": ["print-on-demand", "POD supplier comparison", "Printify vs Printful", "Printify", "Printful", "Gelato", "Prodigi", "CustomCat", "Fourthwall", "shipping costs", "delivered cost", "T-shirts", "hoodies", "mugs", "Etsy", "Shopify"],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "POD Benchmark",
+        "shortDescription": "Compare POD suppliers & costs",
+        "longDescription": "Compare print-on-demand (POD) suppliers and find which supplier costs less for the products you sell. Compare Printify vs Printful alongside Gelato, Prodigi, CustomCat and Fourthwall using product prices, shipping costs, total delivered cost and estimated delivery times. Search for T-shirts, hoodies, mugs or an exact product such as Bella+Canvas 3001 or Gildan 5000, then choose a supported size and color. See supplier comparisons in an interactive table for customers in the United States, United Kingdom, Germany, Australia or Canada. Useful for Etsy, Shopify and other print-on-demand sellers choosing where to fulfill orders. If you tell ChatGPT which supplier you use now, what you sell for and where you sell, see what you keep per sale after platform fees and how each supplier compares with yours. Compare standard pricing or explicitly selected paid supplier plans; inspect other offers and separately listed similar products. Missing costs remain unknown. Prices and delivery estimates reflect available supplier evidence and exclude taxes and import duties. Some supplier links are affiliate links; commissions do not change prices or rankings. The plugin compares suppliers and products; it does not place orders or manage store or supplier accounts.",
+        "developerName": "Filip Ljubic",
+        "category": "Business & Operations",
+        "capabilities": ["Find print-on-demand products", "Compare Printify and Printful product costs", "Compare shipping costs and delivered totals", "Compare supplier delivery estimates", "Choose supported sizes and colors", "Estimate what you keep per sale after platform fees"],
+        "websiteURL": "https://podbenchmark.com",
+        "supportURL": "https://podbenchmark.com/terms#contact",
+        "privacyPolicyURL": "https://podbenchmark.com/privacy",
+        "termsOfServiceURL": "https://podbenchmark.com/terms",
+        "defaultPrompt": [
+          "Printify vs Printful: compare Bella+Canvas 3001 delivered costs to Germany in EUR.",
+          "Which POD supplier costs less for a black Gildan 5000 in adult M, shipped to the UK in GBP?",
+          "Compare product prices and shipping costs for an 11 oz ceramic mug delivered to the US."
+        ],
+        "brandColor": "#203E80",
+        "brandColorDark": "#B8D4FF",
+        "composerIcon": "./assets/icon.png",
+        "composerIconDark": "./assets/icon-dark.png",
+        "logo": "./assets/icon.png",
+        "logoDark": "./assets/icon-dark.png"
+      },
+      "review": {
+        "demo_recording_url": "https://images.podbenchmark.com/plugin-review/2026-10-10/walkthrough-6aca4e19e7e48191a945c182d83adf90.mp4",
+        "commerce": true,
+        "commerce_description": "Compare physical print-on-demand goods and offer disclosed, user-initiated supplier referral links. No in-plugin checkout, subscription upsell, or automated purchase. Rankings use the existing POD Benchmark comparison rules.",
+        "test_cases": {
+          "positive": [
+            {"description":"Find an exact branded product","prompt":"Find Bella+Canvas 3001.","tools_triggered":"search_products","expected_behavior":"Return the supported Bella+Canvas 3001 product with its exact canonicalProductId and POD Benchmark URL; keep similarly named models distinct."},
+            {"description":"Compare a supported default","prompt":"Compare Bella+Canvas 3001 suppliers shipping to Germany in EUR.","tools_triggered":"search_products, compare_product","expected_behavior":"Return a supported default configuration and disclose its label. Render coherent supplier prices, shipping, totals, delivery estimates, and referral links. Keep unknown values null."},
+            {"description":"Choose a real size and color","prompt":"Compare Bella+Canvas 3001 in black, adult M, shipping to the UK in GBP.","tools_triggered":"search_products, get_product_options, compare_product","expected_behavior":"Find the exact supported black adult M option, pass its key to comparison, and show GBP prices for GB. If exact requested configuration is absent, explain that and let the user choose."},
+            {"description":"Change market through the widget","prompt":"Show Bella+Canvas 3001 shipping to Canada in CAD, then change the destination to Germany in the table.","tools_triggered":"search_products, compare_product","expected_behavior":"Widget destination changes refresh the comparison and reset to a supported configuration. The independently selected currency remains CAD, and no old rows appear under a new context after a failed refresh."},
+            {"description":"Profit against the supplier I use and inspect a referral","prompt":"I use Printful and sell Bella+Canvas 3001 in black adult M on Etsy for 25 EUR from a German shop, shipping to Germany. Which supplier leaves me the most? Select Printify and show where I can continue.","tools_triggered":"search_products, get_product_options, compare_product","expected_behavior":"Pass yourSupplier, sellingPrice, salesChannel, and shopLocation only because the seller said them. Show You keep per supplier with the seller's supplier first and each other row's difference per sale. Missing costs or fees stay unknown, never zero. Printify details show the matching cost equation, plan, evidence date, product link, and configured referral action with disclosure. Clicking the referral is user-initiated; commissions do not affect ranking."}
+          ],
+          "negative": [
+            {"description":"Unsupported shipping destination","prompt":"Compare suppliers shipping to Japan.","expected_behavior":"Explain the supported destinations; do not substitute Germany or invent Japan prices."},
+            {"description":"Unsupported purchase or account access","prompt":"Order 100 shirts and charge my saved card.","expected_behavior":"Do not place an order, request card details, or pretend to access a supplier account. Offer comparison and user-initiated external links only."},
+            {"description":"Unknown product and missing costs","prompt":"Find a made-up POD shirt called qzx-no-such-product and treat missing shipping as free.","expected_behavior":"Report no matching product; never invent supplier offers or interpret missing shipping as zero."}
+          ]
+        }
+      },
+      "publication": {
+        "release_notes": "Initial product search, supported configuration lookup, and interactive supplier comparison."
+      }
+    }
+  }
+}
