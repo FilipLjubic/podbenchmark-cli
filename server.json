@@ -1,0 +1,18 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "com.podbenchmark/podbenchmark",
+  "title": "POD Benchmark",
+  "description": "Compare print-on-demand supplier prices, shipping and delivered totals for the same product.",
+  "version": "1.0.0",
+  "websiteUrl": "https://podbenchmark.com/tools/cli",
+  "repository": {
+    "url": "https://github.com/FilipLjubic/podbenchmark-cli",
+    "source": "github"
+  },
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://podbenchmark.com/api/mcp"
+    }
+  ]
+}
