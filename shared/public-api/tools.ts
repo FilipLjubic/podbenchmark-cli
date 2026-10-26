@@ -1,4 +1,5 @@
 import type { z } from "zod";
+import { formatSupplierList } from "../runtime/suppliers";
 import {
   getProductInputSchema,
   getProductOutputSchema,
@@ -26,8 +27,7 @@ import {
   supplierGuideOutputSchema,
 } from "./suppliers";
 
-const SUPPLIERS =
-  "Printify, Printful, Gelato, Prodigi, CustomCat, Fourthwall and Inkthreadable";
+const SUPPLIERS = formatSupplierList("and");
 const DESTINATIONS = "Supported destinations: US, GB, DE, AU, CA.";
 
 /**
@@ -76,7 +76,7 @@ export const PUBLIC_TOOLS = {
   resolve_supplier_link: {
     title: "Find the product behind a supplier link",
     description:
-      "Use this when a seller pastes a supplier product link (Printify, Printful, Gelato, Prodigi, CustomCat, Fourthwall or Inkthreadable). Returns the matching POD Benchmark product and any colour the link selects, ready for compare_product with yourSupplier set to that supplier. It never opens the link.",
+      `Use this when a seller pastes a supplier product link (${formatSupplierList("or")}). Returns the matching POD Benchmark product and any colour the link selects, ready for compare_product with yourSupplier set to that supplier. It never opens the link.`,
     inputSchema: resolveSupplierLinkInputSchema,
     outputSchema: resolveSupplierLinkOutputSchema,
     cacheSeconds: 3600,

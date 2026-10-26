@@ -3,6 +3,7 @@ import { Argument, Command, Flag } from "effect/cli";
 import { z } from "zod";
 import { PUBLIC_TOOLS } from "shared/public-api/tools";
 import { PUBLIC_SUPPLIER_IDS } from "shared/public-api/common";
+import { formatSupplierList } from "shared/runtime/suppliers";
 import { choicesFromFlags, dimensionFlags } from "../choices";
 import { CliFailure, EXIT, nothingFailure, usageFailure } from "../failure";
 import { parseInput } from "../input";
@@ -58,7 +59,7 @@ const sellerFlags = {
 
 const productArgument = Argument.String("product").pipe(
   Argument.withDescription(
-    "A product id from `search`, or a supplier product link (Printify, Printful, Gelato, Prodigi, CustomCat, Fourthwall, Inkthreadable)."
+    `A product id from \`search\`, or a supplier product link (${formatSupplierList("or")}).`
   )
 );
 

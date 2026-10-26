@@ -60,22 +60,6 @@ export interface ApiOptions {
   machine: boolean;
 }
 
-/** The caller's signal plus a timeout, without AbortSignal.any (Node 20.3+). */
-function withTimeout(signal: AbortSignal, ms: number) {
-  const controller = new AbortController();
-  const timer = setTimeout(
-    () => controller.abort(new DOMException("Timed out", "TimeoutError")),
-    ms
-  );
-  const stop = () => {
-    clearTimeout(timer);
-    controller.abort(signal.reason);
-  };
-  if (signal.aborted) stop();
-  else signal.addEventListener("abort", stop, { once: true });
-  return controller.signal;
-}
-
 async function send(
   url: string,
   body: string,
@@ -86,7 +70,8 @@ async function send(
     method: "POST",
     headers,
     body,
-    signal: withTimeout(signal, TIMEOUT_MS),
+    // AbortSignal.timeout's timer doesn't hold the process open after the reply.
+    signal: AbortSignal.any([signal, AbortSignal.timeout(TIMEOUT_MS)]),
   });
   return {
     status: response.status,

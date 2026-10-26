@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { CurrencySchema } from "../pricing/schema";
 import { TARGET_DESTINATIONS } from "../runtime/enums";
-import type { SUPPLIER_LINK_NAMES } from "../runtime/supplier-product-link";
+import { SUPPLIER_IDS } from "../runtime/suppliers";
 
 /**
  * The public API is the one contract behind the public MCP tools and the npm
@@ -15,15 +15,7 @@ export const publicApiToolPath = (name: string) => `/api/v1/tools/${name}`;
 export const PUBLIC_API_AGENT_HEADER = "X-Podbenchmark-Agent";
 export const PUBLIC_API_CLIENT_HEADER = "X-Podbenchmark-Client";
 
-export const PUBLIC_SUPPLIER_IDS = [
-  "customcat",
-  "fourthwall",
-  "gelato",
-  "inkthreadable",
-  "printful",
-  "printify",
-  "prodigi",
-] as const satisfies readonly (keyof typeof SUPPLIER_LINK_NAMES)[];
+export const PUBLIC_SUPPLIER_IDS = SUPPLIER_IDS;
 export type PublicSupplierId = (typeof PUBLIC_SUPPLIER_IDS)[number];
 
 export const publicIdSchema = z.string().trim().min(1).max(200);

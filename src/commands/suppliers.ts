@@ -17,6 +17,7 @@ import {
 import { renderTable } from "../render/table";
 import { present, withSession, type Session } from "../session";
 import { z } from "zod";
+import { formatSupplierList } from "shared/runtime/suppliers";
 
 const suppliersOk = PUBLIC_TOOLS.list_suppliers.outputSchema.options[0];
 const supplierOk = PUBLIC_TOOLS.get_supplier.outputSchema.options[0];
@@ -104,7 +105,7 @@ export const supplierCommand = Command.make(
   {
     supplier: Argument.String("supplier").pipe(
       Argument.withDescription(
-        "printify, printful, gelato, prodigi, customcat or fourthwall."
+        `${formatSupplierList("or", "ids")}.`
       )
     ),
     facts: Flag.Boolean("facts").pipe(

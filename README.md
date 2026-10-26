@@ -15,7 +15,7 @@ npx podbenchmark          # run without installing
 npm i -g podbenchmark     # or install the `podbenchmark` command
 ```
 
-Needs Node.js 20 or newer. No other dependencies.
+Needs Node.js 22 or newer. No other dependencies.
 
 ## Find a product, pick a size and color, compare
 

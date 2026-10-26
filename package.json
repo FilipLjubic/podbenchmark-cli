@@ -1,6 +1,6 @@
 {
   "name": "podbenchmark",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Compare print-on-demand supplier prices from the terminal: product cost, shipping and delivered totals for Printify, Printful, Gelato, Prodigi, CustomCat, Fourthwall and Inkthreadable. Built for sellers, developers and AI agents.",
   "type": "module",
   "bin": {
@@ -12,7 +12,7 @@
     "LICENSE"
   ],
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "keywords": [
     "print-on-demand",

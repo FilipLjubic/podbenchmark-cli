@@ -1,3 +1,4 @@
+import { formatSupplierList } from "shared/runtime/suppliers";
 import { VERSION } from "./api";
 
 export const SKILL_NAME = "podbenchmark";
@@ -6,7 +7,7 @@ export const SKILL_MARKER = "Installed by the podbenchmark CLI";
 
 export const skillText = () => `---
 name: ${SKILL_NAME}
-description: Compare print-on-demand (POD) supplier prices for a product, size, color and destination with the podbenchmark CLI. Use when a seller asks which supplier is cheapest (Printify, Printful, Gelato, Prodigi, CustomCat, Fourthwall, Inkthreadable), what delivered cost or shipping a blank costs, how much they keep per sale on Etsy or Shopify, or which supplier fits their shop.
+description: Compare print-on-demand (POD) supplier prices for a product, size, color and destination with the podbenchmark CLI. Use when a seller asks which supplier is cheapest (${formatSupplierList("or")}), what delivered cost or shipping a blank costs, how much they keep per sale on Etsy or Shopify, or which supplier fits their shop.
 ---
 
 <!-- ${SKILL_MARKER} v${VERSION} (npx podbenchmark skills add). Run it again to update this file. -->

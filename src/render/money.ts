@@ -1,3 +1,5 @@
+import { isSupplierId, SUPPLIER_NAMES } from "shared/runtime/suppliers";
+
 const formatters = new Map<string, Intl.NumberFormat>();
 const formatter = (currency: string) => {
   const cached = formatters.get(currency);
@@ -77,14 +79,8 @@ export const readableDateRange = (first: string, last: string) => {
 /** The hint line's command prefix. */
 export const NPX = "npx podbenchmark";
 
-const SUPPLIER_NAMES: Readonly<Record<string, string>> = {
-  customcat: "CustomCat",
-  fourthwall: "Fourthwall",
-  gelato: "Gelato",
-  printful: "Printful",
-  printify: "Printify",
-  prodigi: "Prodigi",
-};
 /** A supplier id as people write it: `customcat` → `CustomCat`. */
-export const supplierName = (id: string) =>
-  SUPPLIER_NAMES[id.toLowerCase()] ?? id;
+export const supplierName = (id: string) => {
+  const key = id.toLowerCase();
+  return isSupplierId(key) ? SUPPLIER_NAMES[key] : id;
+};
