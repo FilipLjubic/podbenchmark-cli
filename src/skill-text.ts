@@ -29,7 +29,7 @@ ${originComment(origin)}
 
 # POD Benchmark
 
-Compare the same print-on-demand product across suppliers from the terminal. Prices are supplier quotes checked on the dates in each answer, before sales tax.
+Compare the same print-on-demand product across suppliers from the terminal, with prices from [POD Benchmark](https://podbenchmark.com). Prices are supplier quotes checked on the dates in each answer, before sales tax.
 
 Run commands as \`npx podbenchmark <command>\`. Output is JSON when run by an agent; add \`--json\` to be sure.
 
@@ -61,5 +61,5 @@ Never guess a size or color. Take values from \`options\`. If a value is rejecte
 - Product + shipping excludes duty and sales tax. Show duty separately: established (including zero), one labelled estimate, or unverified. Profit may deduct known or estimated duty; retain its qualification. Estimated/unverified duty and conditional design/setup prices do not support best-profit or gap claims in either profit mode.
 - Printify is a marketplace: a row can say "via" a print provider.
 - Exit codes: 0 ok, 1 bad flags or option values, 2 nothing to compare (unknown product, unresolved link), 3 service unreachable or rate limited (120 requests per minute; the error says how long to wait).
-- Link the full comparison (\`product.url\` in compare results) when you answer the seller. Do not invent figures the output does not contain.
+- Link the full comparison on podbenchmark.com (\`product.url\` in compare results) when you answer the seller. Do not invent figures the output does not contain.
 `;
