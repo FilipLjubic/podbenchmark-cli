@@ -1,0 +1,27 @@
+{
+	"$schema": "./node_modules/@emdash-cms/plugin-cli/schemas/emdash-plugin.schema.json",
+
+	"slug": "podbenchmark",
+	"publisher": "did:plc:g2pncftmm33t53rwthfnwjx2",
+
+	"name": "POD Benchmark",
+	"description": "Give your site's AI agent print-on-demand supplier prices: product, shipping and delivered totals from Printify, Printful, Gelato and more.",
+	"keywords": ["print-on-demand", "printify", "printful", "prices", "ai-tools"],
+
+	"license": "MIT",
+	"author": { "name": "POD Benchmark", "url": "https://podbenchmark.com" },
+	"security": { "email": "hello@podbenchmark.com" },
+	// The public mirror (scripts/tools/infra/export-cli-repo.ts copies this package there).
+	"repo": "https://github.com/FilipLjubic/podbenchmark-cli",
+
+	// Trust contract: the plugin only calls the public POD Benchmark API.
+	"capabilities": ["network:request"],
+	"allowedHosts": ["podbenchmark.com"],
+	"storage": {},
+
+	"release": {
+		"artifacts": {
+			"icon": { "file": "./icon.png" }
+		}
+	}
+}

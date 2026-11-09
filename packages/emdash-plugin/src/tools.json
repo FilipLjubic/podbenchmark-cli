@@ -1,0 +1,798 @@
+[
+	{
+		"name": "search_products",
+		"description": "Use this when a seller wants to find a print-on-demand (POD) product to compare across suppliers such as Printify, Printful, Gelato, Prodigi, Apliiq, Artelo, CustomCat, Fourthwall, Inkthreadable and merchOne. Search by product type such as T-shirt, hoodie or mug, or by brand and model such as Bella+Canvas 3001 or Gildan 5000, and filter by category, brand, supplier, audience, specs (fit, material, eco and more) or weight. Returns product ids, a starting delivered price for the destination and optional filter counts; compare a specific size or colour with compare_product. Supported destinations: US, GB, DE, AU, CA.",
+		"inputSchema": {
+			"$schema": "http://json-schema.org/draft-07/schema#",
+			"type": "object",
+			"properties": {
+				"query": {
+					"default": "",
+					"description": "Product type, brand or model, such as `hoodie` or `bella canvas 3001`. Leave empty to browse with filters.",
+					"type": "string",
+					"maxLength": 200
+				},
+				"category": {
+					"description": "A category id from list_categories, such as `t-shirts`.",
+					"type": "string",
+					"minLength": 1,
+					"maxLength": 200
+				},
+				"brands": {
+					"default": [],
+					"maxItems": 20,
+					"type": "array",
+					"items": {
+						"type": "string",
+						"minLength": 1,
+						"maxLength": 200
+					}
+				},
+				"suppliers": {
+					"default": [],
+					"description": "Only products at least one of these suppliers sells.",
+					"maxItems": 10,
+					"type": "array",
+					"items": {
+						"type": "string",
+						"enum": [
+							"apliiq",
+							"artelo",
+							"merchone",
+							"customcat",
+							"fourthwall",
+							"gelato",
+							"inkthreadable",
+							"printful",
+							"printify",
+							"prodigi"
+						]
+					}
+				},
+				"audiences": {
+					"default": [],
+					"description": "Such as unisex, mens, womens or kids.",
+					"maxItems": 10,
+					"type": "array",
+					"items": {
+						"type": "string",
+						"minLength": 1,
+						"maxLength": 200
+					}
+				},
+				"specs": {
+					"default": {},
+					"description": "Spec filters, any value per field, such as { \"fit\": [\"classic\"], \"material\": [\"cotton\"] }. includeFacets lists the values.",
+					"type": "object",
+					"propertyNames": {
+						"type": "string",
+						"enum": [
+							"fit",
+							"fabricBlendCategory",
+							"neckline",
+							"labelType",
+							"sleeve",
+							"material",
+							"capacity",
+							"construction",
+							"ecoFriendly"
+						]
+					},
+					"additionalProperties": {
+						"minItems": 1,
+						"maxItems": 30,
+						"type": "array",
+						"items": {
+							"type": "string",
+							"minLength": 1,
+							"maxLength": 200
+						}
+					}
+				},
+				"minWeightOz": {
+					"type": "number",
+					"minimum": 0,
+					"maximum": 100
+				},
+				"maxWeightOz": {
+					"type": "number",
+					"minimum": 0,
+					"maximum": 100
+				},
+				"pricedOnly": {
+					"default": false,
+					"description": "Only products with a delivered price for the destination.",
+					"type": "boolean"
+				},
+				"sort": {
+					"default": "relevance",
+					"type": "string",
+					"enum": [
+						"relevance",
+						"cheapest",
+						"priciest",
+						"most-suppliers",
+						"name"
+					]
+				},
+				"destination": {
+					"default": "US",
+					"type": "string",
+					"enum": [
+						"US",
+						"GB",
+						"DE",
+						"AU",
+						"CA"
+					],
+					"description": "Where the buyer lives: US, GB, DE, CA or AU."
+				},
+				"currency": {
+					"description": "Currency for every price. Defaults to the destination's own currency.",
+					"type": "string",
+					"enum": [
+						"USD",
+						"EUR",
+						"GBP",
+						"AUD",
+						"CAD"
+					]
+				},
+				"includeFacets": {
+					"default": false,
+					"description": "Also count brands, suppliers, audiences and spec values.",
+					"type": "boolean"
+				},
+				"limit": {
+					"default": 10,
+					"type": "integer",
+					"minimum": 1,
+					"maximum": 50
+				},
+				"offset": {
+					"default": 0,
+					"type": "integer",
+					"minimum": 0,
+					"maximum": 100000
+				}
+			},
+			"additionalProperties": false
+		}
+	},
+	{
+		"name": "list_categories",
+		"description": "Use this to browse POD Benchmark's product categories, with product counts and starting delivered prices for a destination. Pass a category id to search_products to list its products.",
+		"inputSchema": {
+			"$schema": "http://json-schema.org/draft-07/schema#",
+			"type": "object",
+			"properties": {
+				"query": {
+					"default": "",
+					"type": "string",
+					"maxLength": 200
+				},
+				"parent": {
+					"description": "Only the children of this category.",
+					"type": "string",
+					"minLength": 1,
+					"maxLength": 200
+				},
+				"destination": {
+					"default": "US",
+					"type": "string",
+					"enum": [
+						"US",
+						"GB",
+						"DE",
+						"AU",
+						"CA"
+					],
+					"description": "Where the buyer lives: US, GB, DE, CA or AU."
+				},
+				"currency": {
+					"description": "Currency for every price. Defaults to the destination's own currency.",
+					"type": "string",
+					"enum": [
+						"USD",
+						"EUR",
+						"GBP",
+						"AUD",
+						"CAD"
+					]
+				},
+				"limit": {
+					"default": 50,
+					"type": "integer",
+					"minimum": 1,
+					"maximum": 100
+				},
+				"offset": {
+					"default": 0,
+					"type": "integer",
+					"minimum": 0,
+					"maximum": 100000
+				}
+			},
+			"additionalProperties": false
+		}
+	},
+	{
+		"name": "get_product",
+		"description": "Use this when a seller asks about a product's specs, fabric, fit, print methods or what is similar to it. Returns curated product facts and similar products with what they share and how they differ. Specs describe the product; they do not promise every supplier offers every option.",
+		"inputSchema": {
+			"$schema": "http://json-schema.org/draft-07/schema#",
+			"type": "object",
+			"properties": {
+				"canonicalProductId": {
+					"type": "string",
+					"pattern": "^[a-z0-9][a-z0-9-]*$"
+				},
+				"similarLimit": {
+					"default": 5,
+					"type": "integer",
+					"minimum": 0,
+					"maximum": 20
+				}
+			},
+			"required": [
+				"canonicalProductId"
+			],
+			"additionalProperties": false
+		}
+	},
+	{
+		"name": "get_product_options",
+		"description": "Use this when a seller wants supplier pricing for a specific print-on-demand product size or color, such as an adult M black T-shirt or an 11 oz mug. Lists the product's fields and supported configurations for the destination and currency; narrow with words or choices. Pass a returned key as optionKey, or its choices, to compare_product. Search products first to obtain canonicalProductId. Supported destinations: US, GB, DE, AU, CA.",
+		"inputSchema": {
+			"$schema": "http://json-schema.org/draft-07/schema#",
+			"type": "object",
+			"properties": {
+				"canonicalProductId": {
+					"type": "string",
+					"pattern": "^[a-z0-9][a-z0-9-]*$"
+				},
+				"destination": {
+					"type": "string",
+					"enum": [
+						"US",
+						"GB",
+						"DE",
+						"AU",
+						"CA"
+					],
+					"description": "Where the buyer lives: US, GB, DE, CA or AU."
+				},
+				"currency": {
+					"type": "string",
+					"enum": [
+						"USD",
+						"EUR",
+						"GBP",
+						"AUD",
+						"CAD"
+					]
+				},
+				"query": {
+					"default": "",
+					"description": "Words to narrow the list, such as `m black`.",
+					"type": "string",
+					"maxLength": 120
+				},
+				"choices": {
+					"type": "object",
+					"propertyNames": {
+						"type": "string",
+						"minLength": 1,
+						"maxLength": 60
+					},
+					"additionalProperties": {
+						"type": "string",
+						"minLength": 1,
+						"maxLength": 120
+					},
+					"description": "Choices by field, such as { \"size\": \"m\", \"color\": \"black\" }. Values match a value key, its last part or its label, case-insensitively; get_product_options lists them."
+				},
+				"offset": {
+					"default": 0,
+					"type": "integer",
+					"minimum": 0,
+					"maximum": 10000
+				},
+				"limit": {
+					"default": 50,
+					"type": "integer",
+					"minimum": 1,
+					"maximum": 100
+				}
+			},
+			"required": [
+				"canonicalProductId",
+				"destination",
+				"currency"
+			],
+			"additionalProperties": false
+		}
+	},
+	{
+		"name": "compare_product",
+		"description": "Use this when a seller asks which print-on-demand (POD) supplier costs less for a product, wants a Printify vs Printful product comparison, or needs to compare product prices, shipping costs, delivered totals or estimated delivery times. Compares Printify, Printful, Gelato, Prodigi, Apliiq, Artelo, CustomCat, Fourthwall, Inkthreadable and merchOne wherever the product has supplier offers. Useful for Etsy and Shopify sellers choosing where to fulfill T-shirts, hoodies, mugs and other POD products. Compare one product and configuration for a destination and currency. Search products first; for a specified size or color pass choices or an optionKey from get_product_options. With neither, it uses the product's usual configuration and returns its label. Unknown costs remain null; similar products stay separate; affiliate links never change rankings. Paid plans must be explicitly requested; base is standard pricing. supplier shows one supplier's every product and print provider for the choice. Optional seller context, passed only when the seller already said it and never guessed: yourSupplier (the supplier they use now, so it is pinned first and every other row shows the difference per sale), and sellingPrice in the chosen currency, or targetMargin in percent to get the price to charge, with salesChannel (etsy, shopify, woocommerce, tiktok-shop) and shopLocation (the country their shop is in) to apply approved platform fees. Whenever the seller mentions their supplier, selling price, margin or platform, call this tool again with those fields instead of estimating profit yourself. If a price or margin arrives without salesChannel or shopLocation, the result lists what to ask. Profit is an estimate before tax from approved fee research. Supported destinations: US, GB, DE, AU, CA. Comparison totals and rankings are product + shipping. Supplier-billed duty is separate: an established amount, zero, bounded estimate or unverified amount. Profit deducts established duty or a converted estimate. Show one estimated duty amount using the converted upper endpoint, or the native upper endpoint marked not converted; do not narrate min–max ranges. Unverified duty or an unconverted native estimate leaves profit before that charge. Estimated or unverified duty never supports a best actual-profit claim in either profit mode; conditional design/setup prices do not establish a winner or gap. VAT, sales tax and customer-paid import charges are excluded or explicitly marked unknown. Do not use for ordering, store integrations, print-quality rankings or unsupported destinations.",
+		"inputSchema": {
+			"$schema": "http://json-schema.org/draft-07/schema#",
+			"type": "object",
+			"properties": {
+				"canonicalProductId": {
+					"type": "string",
+					"pattern": "^[a-z0-9][a-z0-9-]*$"
+				},
+				"destination": {
+					"type": "string",
+					"enum": [
+						"US",
+						"GB",
+						"DE",
+						"AU",
+						"CA"
+					],
+					"description": "Where the buyer lives: US, GB, DE, CA or AU."
+				},
+				"currency": {
+					"type": "string",
+					"enum": [
+						"USD",
+						"EUR",
+						"GBP",
+						"AUD",
+						"CAD"
+					]
+				},
+				"optionKey": {
+					"description": "An exact key from get_product_options.",
+					"type": "string",
+					"minLength": 1,
+					"maxLength": 2048
+				},
+				"choices": {
+					"type": "object",
+					"propertyNames": {
+						"type": "string",
+						"minLength": 1,
+						"maxLength": 60
+					},
+					"additionalProperties": {
+						"type": "string",
+						"minLength": 1,
+						"maxLength": 120
+					},
+					"description": "Choices by field, such as { \"size\": \"m\", \"color\": \"black\" }. Values match a value key, its last part or its label, case-insensitively; get_product_options lists them."
+				},
+				"pricingTier": {
+					"default": "base",
+					"description": "base is each supplier's standard price; tier1 and tier2 are its paid plans.",
+					"type": "string",
+					"enum": [
+						"base",
+						"tier1",
+						"tier2"
+					]
+				},
+				"supplier": {
+					"description": "Show only this supplier, with every product and print provider it offers for the choice.",
+					"type": "string",
+					"enum": [
+						"apliiq",
+						"artelo",
+						"merchone",
+						"customcat",
+						"fourthwall",
+						"gelato",
+						"inkthreadable",
+						"printful",
+						"printify",
+						"prodigi"
+					]
+				},
+				"yourSupplier": {
+					"description": "The supplier the seller uses today. Only when the seller said so; never guess.",
+					"type": "string",
+					"enum": [
+						"apliiq",
+						"artelo",
+						"merchone",
+						"customcat",
+						"fourthwall",
+						"gelato",
+						"inkthreadable",
+						"printful",
+						"printify",
+						"prodigi"
+					]
+				},
+				"sellingPrice": {
+					"description": "What the seller's customer pays for one selected configuration or pack, in the chosen currency, including any shipping the seller charges. Only when the seller said so.",
+					"type": "number",
+					"exclusiveMinimum": 0,
+					"maximum": 100000
+				},
+				"targetMargin": {
+					"description": "The share of the sale, in percent, the seller wants to keep after supplier cost and platform fees. Returns the price to charge with each supplier. Use instead of sellingPrice.",
+					"type": "number",
+					"exclusiveMinimum": 0,
+					"exclusiveMaximum": 95
+				},
+				"salesChannel": {
+					"description": "The platform the seller sells on. Needed with sellingPrice or targetMargin for platform fees.",
+					"type": "string",
+					"enum": [
+						"etsy",
+						"shopify",
+						"woocommerce",
+						"tiktok-shop"
+					]
+				},
+				"shopLocation": {
+					"description": "The country the seller's shop is based in, which can differ from the destination the order ships to. Needed with sellingPrice or targetMargin for platform fees.",
+					"type": "string",
+					"enum": [
+						"US",
+						"GB",
+						"DE",
+						"AU",
+						"CA"
+					]
+				}
+			},
+			"required": [
+				"canonicalProductId",
+				"destination",
+				"currency"
+			],
+			"additionalProperties": false
+		}
+	},
+	{
+		"name": "resolve_supplier_link",
+		"description": "Use this when a seller pastes a supplier product link (Printify, Printful, Gelato, Prodigi, Apliiq, Artelo, CustomCat, Fourthwall, Inkthreadable or merchOne). Returns the matching POD Benchmark product and any colour the link selects, ready for compare_product with yourSupplier set to that supplier. It never opens the link.",
+		"inputSchema": {
+			"$schema": "http://json-schema.org/draft-07/schema#",
+			"type": "object",
+			"properties": {
+				"url": {
+					"type": "string",
+					"minLength": 1,
+					"maxLength": 4096,
+					"description": "A supplier's product page, such as a Printify or Printful product link."
+				}
+			},
+			"required": [
+				"url"
+			],
+			"additionalProperties": false
+		}
+	},
+	{
+		"name": "list_suppliers",
+		"description": "Use this to list the print-on-demand suppliers POD Benchmark compares, with their type and website.",
+		"inputSchema": {
+			"$schema": "http://json-schema.org/draft-07/schema#",
+			"type": "object",
+			"properties": {
+				"query": {
+					"default": "",
+					"type": "string",
+					"maxLength": 200
+				},
+				"limit": {
+					"default": 10,
+					"type": "integer",
+					"minimum": 1,
+					"maximum": 50
+				},
+				"offset": {
+					"default": 0,
+					"type": "integer",
+					"minimum": 0,
+					"maximum": 100000
+				}
+			},
+			"additionalProperties": false
+		}
+	},
+	{
+		"name": "get_supplier",
+		"description": "Use this when a seller asks how a supplier works: plans and monthly fees, custom branding, who handles checkout, support and refunds, where it prints, or which print providers a marketplace uses. Facts carry their verification date and sources. Production locations are what the supplier reports, not a promise that a given product ships from there.",
+		"inputSchema": {
+			"$schema": "http://json-schema.org/draft-07/schema#",
+			"type": "object",
+			"properties": {
+				"supplierId": {
+					"type": "string",
+					"enum": [
+						"apliiq",
+						"artelo",
+						"merchone",
+						"customcat",
+						"fourthwall",
+						"gelato",
+						"inkthreadable",
+						"printful",
+						"printify",
+						"prodigi"
+					]
+				},
+				"include": {
+					"default": [
+						"facts"
+					],
+					"description": "facts: plans, fees, branding and who handles what. locations: where it reports printing. providers: a marketplace's print providers.",
+					"maxItems": 3,
+					"type": "array",
+					"items": {
+						"type": "string",
+						"enum": [
+							"facts",
+							"locations",
+							"providers"
+						]
+					}
+				},
+				"country": {
+					"description": "Only production locations in this country, such as US.",
+					"type": "string",
+					"pattern": "^[A-Z]{2}$"
+				},
+				"provider": {
+					"type": "string",
+					"minLength": 1,
+					"maxLength": 200
+				},
+				"limit": {
+					"default": 10,
+					"type": "integer",
+					"minimum": 1,
+					"maximum": 50
+				},
+				"offset": {
+					"default": 0,
+					"type": "integer",
+					"minimum": 0,
+					"maximum": 100000
+				}
+			},
+			"required": [
+				"supplierId"
+			],
+			"additionalProperties": false
+		}
+	},
+	{
+		"name": "get_supplier_prices",
+		"description": "Use this when a seller asks how a supplier's prices compare overall, by category, or against one other supplier: how many products it is the cheapest for, where it costs more, and by how much. Uses each product's usual configuration delivered to the destination; checkedAt is the supplier's latest price scrape.",
+		"inputSchema": {
+			"$schema": "http://json-schema.org/draft-07/schema#",
+			"type": "object",
+			"properties": {
+				"supplierId": {
+					"type": "string",
+					"enum": [
+						"apliiq",
+						"artelo",
+						"merchone",
+						"customcat",
+						"fourthwall",
+						"gelato",
+						"inkthreadable",
+						"printful",
+						"printify",
+						"prodigi"
+					]
+				},
+				"versus": {
+					"description": "Compare against this supplier only, instead of every other one.",
+					"type": "string",
+					"enum": [
+						"apliiq",
+						"artelo",
+						"merchone",
+						"customcat",
+						"fourthwall",
+						"gelato",
+						"inkthreadable",
+						"printful",
+						"printify",
+						"prodigi"
+					]
+				},
+				"category": {
+					"type": "string",
+					"minLength": 1,
+					"maxLength": 200
+				},
+				"search": {
+					"default": "",
+					"type": "string",
+					"maxLength": 200
+				},
+				"within": {
+					"default": {
+						"kind": "amount",
+						"amount": 1
+					},
+					"description": "How close to the cheapest still counts as near-cheapest.",
+					"oneOf": [
+						{
+							"type": "object",
+							"properties": {
+								"kind": {
+									"type": "string",
+									"const": "amount"
+								},
+								"amount": {
+									"type": "number",
+									"minimum": 0,
+									"maximum": 1000
+								}
+							},
+							"required": [
+								"kind",
+								"amount"
+							],
+							"additionalProperties": false
+						},
+						{
+							"type": "object",
+							"properties": {
+								"kind": {
+									"type": "string",
+									"const": "percent"
+								},
+								"percent": {
+									"type": "number",
+									"minimum": 0,
+									"maximum": 100
+								}
+							},
+							"required": [
+								"kind",
+								"percent"
+							],
+							"additionalProperties": false
+						}
+					]
+				},
+				"pricingTier": {
+					"default": "base",
+					"type": "string",
+					"enum": [
+						"base",
+						"tier1",
+						"tier2"
+					]
+				},
+				"destination": {
+					"default": "US",
+					"type": "string",
+					"enum": [
+						"US",
+						"GB",
+						"DE",
+						"AU",
+						"CA"
+					],
+					"description": "Where the buyer lives: US, GB, DE, CA or AU."
+				},
+				"currency": {
+					"description": "Currency for every price. Defaults to the destination's own currency.",
+					"type": "string",
+					"enum": [
+						"USD",
+						"EUR",
+						"GBP",
+						"AUD",
+						"CAD"
+					]
+				},
+				"limit": {
+					"default": 10,
+					"type": "integer",
+					"minimum": 1,
+					"maximum": 50
+				},
+				"offset": {
+					"default": 0,
+					"type": "integer",
+					"minimum": 0,
+					"maximum": 100000
+				},
+				"categoryLimit": {
+					"default": 10,
+					"type": "integer",
+					"minimum": 0,
+					"maximum": 50
+				}
+			},
+			"required": [
+				"supplierId"
+			],
+			"additionalProperties": false
+		}
+	},
+	{
+		"name": "supplier_guide",
+		"description": "Use this when a seller is choosing a supplier for a product type (t-shirts, hoodies, mugs, wall art, stickers or phone cases) and their shop: where buyers are, the platform, whether they need custom branding, want to start free, or want to choose their print provider. Returns suppliers that fit, that need a check, and that don't, each with dated reasons and sources, plus a delivered price range for an example product. No AI ranking.",
+		"inputSchema": {
+			"$schema": "http://json-schema.org/draft-07/schema#",
+			"type": "object",
+			"properties": {
+				"productType": {
+					"default": "t-shirts",
+					"type": "string",
+					"enum": [
+						"t-shirts",
+						"hoodies",
+						"mugs",
+						"wall-art",
+						"stickers",
+						"phone-cases"
+					]
+				},
+				"destination": {
+					"default": "US",
+					"type": "string",
+					"enum": [
+						"US",
+						"GB",
+						"DE",
+						"AU",
+						"CA"
+					],
+					"description": "Where the buyer lives: US, GB, DE, CA or AU."
+				},
+				"salesChannel": {
+					"description": "Where the seller sells. Leave out if they haven't decided.",
+					"type": "string",
+					"enum": [
+						"shopify",
+						"etsy",
+						"woocommerce",
+						"tiktok-shop"
+					]
+				},
+				"shopLocation": {
+					"type": "string",
+					"enum": [
+						"US",
+						"GB",
+						"DE",
+						"AU",
+						"CA"
+					]
+				},
+				"needsCustomBranding": {
+					"default": false,
+					"type": "boolean"
+				},
+				"wantsFreeStart": {
+					"default": false,
+					"type": "boolean"
+				},
+				"wantsToChooseProvider": {
+					"default": false,
+					"type": "boolean"
+				},
+				"limit": {
+					"default": 10,
+					"type": "integer",
+					"minimum": 1,
+					"maximum": 50
+				},
+				"offset": {
+					"default": 0,
+					"type": "integer",
+					"minimum": 0,
+					"maximum": 100000
+				}
+			},
+			"additionalProperties": false
+		}
+	}
+]

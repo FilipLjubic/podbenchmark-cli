@@ -1,0 +1,43 @@
+{
+	"name": "podbenchmark-emdash-plugin",
+	"version": "1.0.0",
+	"private": true,
+	"type": "module",
+	"packageManager": "bun@1.4.4",
+	"main": "dist/index.mjs",
+	"exports": {
+		".": {
+			"import": "./dist/index.mjs",
+			"types": "./dist/index.d.mts"
+		},
+		"./sandbox": "./dist/plugin.mjs"
+	},
+	"files": [
+		"dist",
+		"emdash-plugin.jsonc"
+	],
+	"scripts": {
+		"validate": "emdash-plugin validate",
+		"build": "bun scripts/generate-tools.ts && emdash-plugin build",
+		"dev": "emdash-plugin dev",
+		"typecheck": "tsc --noEmit",
+		"test": "emdash-plugin validate && vitest run",
+		"bundle": "bun scripts/generate-tools.ts && emdash-plugin bundle",
+		"login": "emdash-plugin login",
+		"publish": "bun scripts/generate-tools.ts && emdash-plugin publish",
+		"release:setup": "emdash-plugin release setup",
+		"generate": "bun scripts/generate-tools.ts"
+	},
+	"peerDependencies": {
+		"emdash": ">=0.12.0"
+	},
+	"devDependencies": {
+		"@emdash-cms/plugin-cli": "0.13.5",
+		"@emdash-cms/plugin-test": "^0.2.6",
+		"@types/bun": "^1.4.4",
+		"emdash": "^1.0.0",
+		"typescript": "^5.9.0",
+		"vitest": "^4.1.0"
+	},
+	"description": "POD Benchmark tools for an EmDash site's AI agent: print-on-demand supplier prices, shipping and delivered totals."
+}

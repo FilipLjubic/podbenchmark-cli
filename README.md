@@ -257,6 +257,8 @@ The same tools are available to MCP clients over streamable HTTP at `https://pod
 
 Claude Code: `claude mcp add --transport http podbenchmark https://podbenchmark.com/api/mcp`. Codex: `codex mcp add podbenchmark --url https://podbenchmark.com/api/mcp`. Manus: open Connectors, add a custom MCP server, and paste the URL. Cursor: install it from [cursor.directory](https://cursor.directory/plugins), or add the server to `~/.cursor/mcp.json` with the config above.
 
+On an [EmDash](https://emdashcms.com) site, install [`@podbenchmark.com/podbenchmark`](https://plugins.emdashcms.com/plugins/@podbenchmark.com/podbenchmark) from the admin's Registry, then turn on its MCP tools to give the site's AI agent the same tools. Its source is in [`packages/emdash-plugin`](packages/emdash-plugin).
+
 ## HTTP API
 
 The CLI, the MCP server and the Make app call the same public API. It needs no account or key.
