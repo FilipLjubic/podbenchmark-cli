@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "podbenchmark": {
+      "url": "https://podbenchmark.com/api/mcp"
+    }
+  }
+}

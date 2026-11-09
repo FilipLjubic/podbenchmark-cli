@@ -1,0 +1,35 @@
+{
+  "name": "podbenchmark",
+  "version": "0.1.2",
+  "description": "Compare print-on-demand (POD) suppliers including Printify, Printful, Gelato, Prodigi, CustomCat, Fourthwall, Inkthreadable, Apliiq, Artelo and merchOne. Find which supplier costs less for T-shirts, hoodies and mugs by comparing product prices, shipping costs, total delivered cost and delivery estimates for your customers' country.",
+  "author": {
+    "name": "Filip Ljubic"
+  },
+  "homepage": "https://podbenchmark.com",
+  "repository": "https://github.com/FilipLjubic/podbenchmark-cli",
+  "license": "MIT",
+  "keywords": [
+    "print-on-demand",
+    "POD supplier comparison",
+    "Printify vs Printful",
+    "Printify",
+    "Printful",
+    "Gelato",
+    "Prodigi",
+    "CustomCat",
+    "Fourthwall",
+    "Inkthreadable",
+    "Artelo",
+    "merchOne reference prices",
+    "shipping costs",
+    "delivered cost",
+    "T-shirts",
+    "hoodies",
+    "mugs",
+    "Etsy",
+    "Shopify"
+  ],
+  "logo": "plugins/podbenchmark/assets/icon.png",
+  "skills": "skills/",
+  "mcpServers": ".mcp.json"
+}

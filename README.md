@@ -255,7 +255,7 @@ The same tools are available to MCP clients over streamable HTTP at `https://pod
 }
 ```
 
-Claude Code: `claude mcp add --transport http podbenchmark https://podbenchmark.com/api/mcp`. Codex: `codex mcp add podbenchmark --url https://podbenchmark.com/api/mcp`. Manus: open Connectors, add a custom MCP server, and paste the URL.
+Claude Code: `claude mcp add --transport http podbenchmark https://podbenchmark.com/api/mcp`. Codex: `codex mcp add podbenchmark --url https://podbenchmark.com/api/mcp`. Manus: open Connectors, add a custom MCP server, and paste the URL. Cursor: install it from [cursor.directory](https://cursor.directory/plugins), or add the server to `~/.cursor/mcp.json` with the config above.
 
 ## Exit codes
 
