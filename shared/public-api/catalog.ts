@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { CurrencySchema } from "../pricing/schema";
-import { canonicalPathSegmentSchema } from "../product-search/identity";
+import { canonicalPathSegmentSchema } from "../product-search/identity-schema";
 import { TARGET_DESTINATIONS } from "../runtime/enums";
 import { SPEC_FACETS } from "../site/spec-facets";
 import {

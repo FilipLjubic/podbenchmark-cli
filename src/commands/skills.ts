@@ -4,7 +4,7 @@ import { homedir } from "node:os";
 import { z } from "zod";
 import { CliFailure, EXIT, usageFailure } from "../failure";
 import { printJson, withSession, type Session } from "../session";
-import { SKILL_MARKER, SKILL_NAME, skillText } from "../skill-text";
+import { OWNED_SKILL_MARKERS, SKILL_NAME, skillText } from "../skill-text";
 import type { DetectedAgent } from "../agent";
 
 const AGENTS = ["claude", "codex", "opencode", "cursor"] as const;
@@ -58,7 +58,7 @@ const write = (agent: Agent, file: string, content: string, force: boolean) =>
       const current = yield* fs.readFileString(file);
       if (current === content)
         return { agent, path: file, result: "unchanged" } satisfies Outcome;
-      if (!current.includes(SKILL_MARKER) && !force) {
+      if (!OWNED_SKILL_MARKERS.some(marker => current.includes(marker)) && !force) {
         return { agent, path: file, result: "skipped" } satisfies Outcome;
       }
     }

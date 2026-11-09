@@ -1,11 +1,16 @@
 /**
- * Every supplier with a live comparison data path. Lists of "all suppliers"
- * derive from this one, and per-supplier decisions are typed
- * `Record<SupplierId, …>`, so adding a supplier here makes the typecheck name
- * each decision still to make. `bun run supplier:rollout` reports the rest:
- * profile copy, pair pages, seeded facts and option links.
+ * The launched suppliers: the ones in this list. Other suppliers may hold
+ * scraped data but stay invisible to site queries, build artifacts and the
+ * release gates until their id is added here (see `launchedSupplierSql`).
+ * Lists of "all suppliers" derive from this one, and per-supplier decisions are
+ * typed `Record<SupplierId, …>`, so launching a supplier makes the typecheck
+ * name each decision still to make. `bun run supplier:rollout` reports the
+ * rest: profile copy, pair pages, seeded facts and option links.
  */
 export const SUPPLIER_IDS = [
+  "apliiq",
+  "artelo",
+  "merchone",
   "customcat",
   "fourthwall",
   "gelato",
@@ -14,6 +19,11 @@ export const SUPPLIER_IDS = [
   "printify",
   "prodigi",
 ] as const;
+
+/** Ingestion candidates remain excluded from launchedSupplierSql and site selectors. */
+export const CANDIDATE_SUPPLIER_IDS = ["printkk"] as const;
+export type CandidateSupplierId = (typeof CANDIDATE_SUPPLIER_IDS)[number];
+export type IngestionSupplierId = SupplierId | CandidateSupplierId;
 
 export type SupplierId = (typeof SUPPLIER_IDS)[number];
 
@@ -24,6 +34,10 @@ export function isSupplierId(value: string): value is SupplierId {
 }
 
 export const SUPPLIER_NAMES = {
+  printkk: "PrintKK",
+  apliiq: "Apliiq",
+  artelo: "Artelo",
+  merchone: "merchOne",
   customcat: "CustomCat",
   fourthwall: "Fourthwall",
   gelato: "Gelato",
@@ -31,10 +45,10 @@ export const SUPPLIER_NAMES = {
   printful: "Printful",
   printify: "Printify",
   prodigi: "Prodigi",
-} as const satisfies Record<SupplierId, string>;
+} as const satisfies Record<IngestionSupplierId, string>;
 
 /** The most-searched names lead copy that lists every supplier. */
-const LEADING_SUPPLIER_IDS = [
+export const LEADING_SUPPLIER_IDS = [
   "printify",
   "printful",
   "gelato",

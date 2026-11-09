@@ -6,3 +6,10 @@ export const SALES_CHANNELS = [
   "tiktok-shop",
 ] as const;
 export type SalesChannel = (typeof SALES_CHANNELS)[number];
+
+export const SALES_CHANNEL_LABELS = {
+  etsy: "Etsy",
+  shopify: "Shopify",
+  "tiktok-shop": "TikTok Shop",
+  woocommerce: "WooCommerce",
+} satisfies Readonly<Record<SalesChannel, string>>;

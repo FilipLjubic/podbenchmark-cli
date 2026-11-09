@@ -1,7 +1,7 @@
 {
   "name": "podbenchmark",
   "version": "0.1.2",
-  "description": "Compare print-on-demand supplier prices from the terminal: product cost, shipping and delivered totals for Printify, Printful, Gelato, Prodigi, CustomCat, Fourthwall and Inkthreadable. Built for sellers, developers and AI agents.",
+  "description": "Compare print-on-demand supplier prices from the terminal: product cost, shipping and delivered totals for Printify, Printful, Gelato, Prodigi, CustomCat, Fourthwall, Inkthreadable, Apliiq, Artelo and merchOne. Built for sellers, developers and AI agents. merchOne size-band prices are reference-only and excluded from configured winners, savings and profit.",
   "type": "module",
   "bin": {
     "podbenchmark": "dist/podbenchmark.mjs"

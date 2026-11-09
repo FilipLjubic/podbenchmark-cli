@@ -1,4 +1,21 @@
+import { effectiveEmbroidery } from "./pricing-context";
 import { z } from "zod";
+import {
+  EXISTING_SUPPLIER_DESIGN_BASIS,
+  INCLUDED_SUPPLIER_DIGITISATION_BASIS,
+  isConditionalSupplierPricingContext,
+  isEmbroideryPricingMethod,
+  isUnqualifiedPricingContextEligible,
+} from "./pricing-context";
+
+// Browser code imports `pricing-context` directly so the schema library stays
+// out of its bundle; server code keeps one path through this module.
+export {
+  EXISTING_SUPPLIER_DESIGN_BASIS,
+  INCLUDED_SUPPLIER_DIGITISATION_BASIS,
+  isConditionalSupplierPricingContext,
+  isEmbroideryPricingMethod,
+};
 
 /**
  * A known compulsory charge with unresolved order/design context cannot become
@@ -9,10 +26,6 @@ import { z } from "zod";
  * `requiredCharges.pricingContext`. The context is validated here once; a
  * flagged offer without a valid context is never complete.
  */
-
-/** The unit price requires the supplier's own compatible, reusable digitised file. */
-export const EXISTING_SUPPLIER_DESIGN_BASIS = "existing-supplier-digitised-design";
-export const INCLUDED_SUPPLIER_DIGITISATION_BASIS = "digitisation-included";
 
 const nonBlank = z.string().min(1).max(200).refine(value => value.trim().length > 0);
 const evidenceText = z.string().min(1).max(600).refine(value => value.trim().length > 0);
@@ -86,17 +99,6 @@ export const supplierPricingContextSchema = z
 
 export type SupplierPricingContext = z.infer<typeof supplierPricingContextSchema>;
 
-/** Conditions that an aggregate headline cannot repeat beside every price. */
-export function isConditionalSupplierPricingContext(context: {
-  readonly basis: SupplierPricingContext["basis"];
-  readonly recurringConditions: readonly string[];
-} | undefined): boolean {
-  return context !== undefined && (
-    context.basis === EXISTING_SUPPLIER_DESIGN_BASIS ||
-    context.recurringConditions.length > 0
-  );
-}
-
 export type SupplierPricingContextRead =
   | { readonly status: "absent" }
   | { readonly status: "valid"; readonly context: SupplierPricingContext }
@@ -116,11 +118,15 @@ export function readSupplierPricingContext(
 /** A method total needs its own valid, unconditional context for embroidery. */
 export function readUnqualifiedPricingContextEligible(
   value: unknown,
-  printTechnology?: string | null
+  printTechnology?: string | null,
+  printMethod?: string | null
 ): boolean {
   const context = readSupplierPricingContext(value);
-  if (context.status === "absent") return !isEmbroideryPricingMethod(printTechnology);
-  return context.status === "valid" && !isConditionalSupplierPricingContext(context.context);
+  if (context.status === "invalid") return false;
+  return isUnqualifiedPricingContextEligible(
+    context.status === "valid" ? context.context : null,
+    printTechnology, printMethod
+  );
 }
 
 /**
@@ -155,10 +161,6 @@ export function readRequiredSupplierPricingContext(data: unknown): SupplierPrici
     : { status: "invalid" };
 }
 
-export function isEmbroideryPricingMethod(method: string | null | undefined): boolean {
-  return method?.toLowerCase().includes("embroid") ?? false;
-}
-
 function matchesDisclosedSetupCharge(
   setup: SetupAmount,
   disclosed: SupplierPricingContext["newDesignSetup"]
@@ -173,10 +175,10 @@ function matchesDisclosedSetupCharge(
 
 export function readRequiredSupplierChargesComplete(
   data: unknown,
-  printTechnology?: string | null,
-  printMethod?: string | null
+  printTechnology: string | null | undefined,
+  printMethod: string | null | undefined
 ): boolean {
-  const needsContext = [printTechnology, printMethod].some(isEmbroideryPricingMethod);
+  const needsContext = effectiveEmbroidery(printTechnology, printMethod);
   if (data === null || data === undefined) return !needsContext;
   const parsed = chargeCompletenessSchema.safeParse(data);
   if (!parsed.success) return false;

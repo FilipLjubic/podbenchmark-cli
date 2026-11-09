@@ -1,6 +1,5 @@
-import { z } from "zod";
 import { isProvisionalPriceSource } from "./provisional.ts";
-import { UnknownRecordSchema } from "../schemas/json.ts";
+import { readUnknownRecord } from "../schemas/record.ts";
 import { SUPPORTED_CURRENCIES, type Currency } from "../runtime/fx/types";
 
 export const PRICE_AUTHORITIES = [
@@ -51,15 +50,15 @@ export function isSupportedCurrency(value: unknown): value is Currency {
   return typeof value === "string" && CURRENCY_SET.has(value);
 }
 
-const NonBlankStringSchema = z.string().regex(/\S/u);
-
+/* eslint-disable podbenchmark/no-runtime-typeof -- Reads one stored string field; this module ships to browsers, which load no schema library. */
 function readString(
   record: Record<string, unknown> | null,
   key: string
 ): string | null {
-  const parsed = NonBlankStringSchema.safeParse(record?.[key]);
-  return parsed.success ? parsed.data : null;
+  const value = record?.[key];
+  return typeof value === "string" && /\S/u.test(value) ? value : null;
 }
+/* eslint-enable podbenchmark/no-runtime-typeof */
 
 function parseCurrency(value: unknown, fallback: string): Currency {
   if (isSupportedCurrency(value)) return value;
@@ -82,33 +81,12 @@ function provisionalPriceOrigin(input: StoredPriceOriginInput, fx: Record<string
 export function resolveStoredPriceOrigin(
   input: StoredPriceOriginInput
 ): StoredPriceOrigin {
-  const parsedData = UnknownRecordSchema.safeParse(input.data);
-  const data = parsedData.success ? parsedData.data : null;
-  const parsedFx = UnknownRecordSchema.safeParse(data?.fx);
-  const fx = parsedFx.success ? parsedFx.data : null;
+  const data = readUnknownRecord(input.data);
+  const fx = readUnknownRecord(data?.fx);
   const dataPriceSource = readString(data, "priceSource");
 
   if (isProvisionalPriceSource(input.explicitPriceSource ?? dataPriceSource)) {
     return provisionalPriceOrigin(input, fx);
-  }
-
-  if (
-    input.supplierId === "prodigi" &&
-    dataPriceSource === "quote_converted"
-  ) {
-    return {
-      authority: "market_fx",
-      priceSource: dataPriceSource,
-      sourceCurrency: parseCurrency(
-        readString(fx, "fxFromCurrency") ?? input.explicitSourceCurrency,
-        input.currency
-      ),
-      pricePolicyId: null,
-      pricePolicyVersion: readString(fx, "fxPolicyVersion"),
-      roundingPolicyId: "nearest-cent",
-      fxSnapshotId:
-        input.explicitFxSnapshotId ?? readString(fx, "snapshotId"),
-    };
   }
 
   if (input.supplierId === "printful" && input.currency !== "USD") {

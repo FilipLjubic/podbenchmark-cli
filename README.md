@@ -1,12 +1,14 @@
 # podbenchmark
 
-Compare the same print-on-demand product across suppliers from your terminal: product cost, shipping, delivered total and delivery time for Printify, Printful, Gelato, Prodigi, CustomCat, Fourthwall and Inkthreadable. Built for sellers, developers and AI agents.
+Compare the same print-on-demand product across suppliers from your terminal: product cost, shipping, delivered total and delivery time for Printify, Printful, Gelato, Prodigi, CustomCat, Fourthwall, Inkthreadable, Apliiq, Artelo and merchOne. Built for sellers, developers and AI agents.
 
 ```sh
 npx podbenchmark compare bella-canvas-3001 --size m --color black --to US
 ```
 
 Prices come from [POD Benchmark](https://podbenchmark.com), which checks each supplier's price and shipping for the destination you pick. Full interactive comparison: <https://podbenchmark.com>.
+
+merchOne size-band prices are reference-only; configured winners, savings and profit exclude them.
 
 ## Install
 
@@ -123,7 +125,7 @@ Prices checked 2026-09-30 to 2026-10-21.
 
 | Flag | Meaning |
 | --- | --- |
-| `--current <supplier>` | The supplier you use now: `printify`, `printful`, `gelato`, `prodigi`, `customcat` or `fourthwall`. |
+| `--current <supplier>` | The supplier you use now: `printify`, `printful`, `gelato`, `prodigi`, `customcat`, `fourthwall`, `inkthreadable` or `apliiq`. |
 | `--sell-for <price>` | What your customer pays per item, in the chosen currency. |
 | `--on <channel>` | `etsy`, `shopify`, `woocommerce` or `tiktok-shop`. |
 | `--shop-in <country>` | The country your shop is in. Defaults to the destination when you give a price and a channel. |
@@ -153,7 +155,7 @@ Charge = the price that leaves you 30% of the sale after product + shipping, ded
 ## Suppliers and guides
 
 ```sh
-podbenchmark suppliers                                  # the seven suppliers compared
+podbenchmark suppliers                                  # the eight suppliers compared
 podbenchmark supplier printful                          # plans, fees, branding, who handles support and refunds
 podbenchmark supplier printify --locations --country US # where it reports printing
 podbenchmark supplier printify --providers              # a marketplace's print providers
@@ -226,6 +228,14 @@ This writes a `podbenchmark` skill (a `SKILL.md`) to each agent's skills folder 
 
 Running it again updates the file. It never replaces a `SKILL.md` that it did not write unless you pass `--force`.
 
+The same skill is on [skills.sh](https://skills.sh/FilipLjubic/podbenchmark-cli), for any agent the `skills` installer supports:
+
+```sh
+npx skills add FilipLjubic/podbenchmark-cli
+```
+
+In Manus, open Skills, choose Add, then Import from GitHub, and paste `https://github.com/FilipLjubic/podbenchmark-cli`.
+
 No skill folder? Paste this into your agent instead:
 
 > Use `npx podbenchmark` to compare print-on-demand supplier prices. Flow: `search <words> --json` to find a product id, `options <id> --json` to see the exact size and color values (never guess them), then `compare <id> --size <value> --color <value> --to <US|GB|DE|CA|AU> --json`. Add `--current <supplier> --sell-for <price> --on <etsy|shopify|woocommerce|tiktok-shop>` only when the seller said so. `null` means unknown, never 0. Link `product.url` from the result when you answer. `--schema` shows every field.
@@ -245,7 +255,7 @@ The same tools are available to MCP clients over streamable HTTP at `https://pod
 }
 ```
 
-Claude Code: `claude mcp add --transport http podbenchmark https://podbenchmark.com/api/mcp`. Codex: `codex mcp add podbenchmark --url https://podbenchmark.com/api/mcp`.
+Claude Code: `claude mcp add --transport http podbenchmark https://podbenchmark.com/api/mcp`. Codex: `codex mcp add podbenchmark --url https://podbenchmark.com/api/mcp`. Manus: open Connectors, add a custom MCP server, and paste the URL.
 
 ## Exit codes
 

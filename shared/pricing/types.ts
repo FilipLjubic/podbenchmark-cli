@@ -43,6 +43,7 @@ export type ProjectablePriceFields = {
  * components so a currency projection converts it like the selected offer.
  */
 export type PrintTechnologyOffer = {
+  printMethod?: string | null;
   basePrice: number;
   shippingPrice: number;
   dutyPrice: number | null;

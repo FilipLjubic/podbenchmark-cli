@@ -4,13 +4,28 @@ import { VERSION } from "./api";
 export const SKILL_NAME = "podbenchmark";
 /** Present in every file this CLI writes, so it never overwrites someone else's. */
 export const SKILL_MARKER = "Installed by the podbenchmark CLI";
+/** Present in the copy published in the public repo (skills.sh, `npx skills add`). */
+export const PUBLISHED_SKILL_MARKER = "Published by POD Benchmark";
+/** Skill files the CLI may replace: ones it wrote, or the published copy. */
+export const OWNED_SKILL_MARKERS = [SKILL_MARKER, PUBLISHED_SKILL_MARKER] as const;
 
-export const skillText = () => `---
+/**
+ * `cli`: written by `podbenchmark skills add`.
+ * `published`: the repo copy that `npx skills add FilipLjubic/podbenchmark-cli` installs.
+ */
+export type SkillOrigin = "cli" | "published";
+
+const originComment = (origin: SkillOrigin) =>
+  origin === "cli"
+    ? `<!-- ${SKILL_MARKER} v${VERSION} (npx podbenchmark skills add). Run it again to update this file. -->`
+    : `<!-- ${PUBLISHED_SKILL_MARKER} for podbenchmark v${VERSION}. Update with npx skills update, or npx podbenchmark skills add. -->`;
+
+export const skillText = (origin: SkillOrigin = "cli") => `---
 name: ${SKILL_NAME}
 description: Compare print-on-demand (POD) supplier prices for a product, size, color and destination with the podbenchmark CLI. Use when a seller asks which supplier is cheapest (${formatSupplierList("or")}), what delivered cost or shipping a blank costs, how much they keep per sale on Etsy or Shopify, or which supplier fits their shop.
 ---
 
-<!-- ${SKILL_MARKER} v${VERSION} (npx podbenchmark skills add). Run it again to update this file. -->
+${originComment(origin)}
 
 # POD Benchmark
 

@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { CurrencySchema } from "../pricing/schema";
 import { supplierPricingContextSchema } from "../pricing/required-charges";
-import { canonicalPathSegmentSchema } from "../product-search/identity";
+import { canonicalPathSegmentSchema } from "../product-search/identity-schema";
 import { TARGET_DESTINATIONS } from "../runtime/enums";
 import { SALES_CHANNELS } from "../sales-channel-fees/channels";
 import {
@@ -73,7 +73,7 @@ export const compareProductInputSchema = z
       .max(100000)
       .optional()
       .describe(
-        "What the seller's customer pays per item, in the chosen currency, including any shipping the seller charges. Only when the seller said so."
+        "What the seller's customer pays for one selected configuration or pack, in the chosen currency, including any shipping the seller charges. Only when the seller said so."
       ),
     targetMargin: z
       .number()
@@ -175,6 +175,7 @@ const offerSchema = z.strictObject({
   price: z.number().nonnegative().nullable(),
   shipping: z.number().nonnegative().nullable(),
   duty: z.number().nonnegative().nullable(),
+  dutyOutcome: z.enum(["charged", "not_applicable", "estimated", "unknown"]).nullable().optional(),
   dutyEstimate: dutyEstimateSchema.nullable().optional(),
   priceBasis: z.literal("product-and-shipping"),
   dutySource: z
@@ -199,6 +200,8 @@ const offerSchema = z.strictObject({
    */
   versusYours: z.number().nullable(),
   note: z.string().nullable(),
+  criticalDifferences: z.array(z.string().trim().min(1)),
+  differencesUnresolved: z.string().trim().min(1).nullable(),
   pricingContext: supplierPricingContextSchema.optional(),
   /** The selected price basis and setup disclosure in words. */
   pricingBasis: z.string().optional(),

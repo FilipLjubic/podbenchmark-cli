@@ -1,10 +1,10 @@
+import { effectiveEmbroidery } from "./pricing-context";
 import { z } from "zod";
 
 import { SUPPORTED_CURRENCIES } from "../runtime/fx/types";
 import { PRICE_AUTHORITIES } from "./authority";
 import { readSupplierDutyEstimate } from "./duty";
 import {
-  isEmbroideryPricingMethod,
   readSupplierPricingContext,
 } from "./required-charges";
 import type {
@@ -60,6 +60,7 @@ const AmountSchema = z.number().finite().nonnegative();
 const NullableTextSchema = z.string().min(1).nullable();
 
 const PrintTechnologyDisplayOfferSchema = z.object({
+  printMethod: z.string().nullable().optional(),
   basePrice: AmountSchema,
   shippingPrice: AmountSchema,
   dutyPrice: AmountSchema.nullable(),
@@ -99,7 +100,7 @@ export function parsePrintTechnologyDisplayOffers(
     const context = readSupplierPricingContext(pricingContext);
     if (context.status === "invalid") continue;
     if (context.status === "absent") {
-      if (isEmbroideryPricingMethod(technology)) continue;
+      if (effectiveEmbroidery(technology, offer.printMethod)) continue;
       entries.push([technology, { ...offer, ...dutyFields }]);
       continue;
     }

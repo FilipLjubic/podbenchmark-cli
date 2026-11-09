@@ -18,7 +18,7 @@ const supplierSchema = z.strictObject({
   /** `marketplace` routes orders to independent print providers. */
   type: z.string().nullable(),
   website: z.url(),
-  url: z.url(),
+  url: z.url().nullable(),
 });
 const sourceSchema = z.strictObject({ label: z.string(), url: z.url() });
 
@@ -198,7 +198,7 @@ const guideReasonSchema = z.strictObject({
 const guideSupplierSchema = z.strictObject({
   supplierId: z.string(),
   name: z.string(),
-  url: z.url(),
+  url: z.url().nullable(),
   reasons: z.array(guideReasonSchema),
 });
 const guideListSchema = z.strictObject({

@@ -6,17 +6,27 @@
 
 export type UnknownRecord = Record<string, unknown>;
 
-function isObjectRecordValue(value: unknown): value is object {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
+/** A plain object: non-null, not an array, no class prototype to leak. */
+type ObjectRecord = { [key: string]: unknown };
+
+function isObjectRecordValue(value: unknown): value is ObjectRecord {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) {
+    return false;
+  }
+  // Parsed JSON and module namespaces are plain (or null-prototype) records;
+  // a Date, Error, or class instance is not one, so callers still see absence.
+  const prototype = Object.getPrototypeOf(value);
+  return prototype === Object.prototype || prototype === null;
 }
 
 /**
- * Parse `value` as a string-keyed record, returning `null` for non-records.
- * Use where the caller must distinguish an absent record from an empty one;
- * nested values remain unknown.
+ * Narrow `value` to a plain string-keyed record, returning `null` for
+ * non-records. Use where the caller must distinguish an absent record from an
+ * empty one; nested values remain unknown. This is a check, not a copy:
+ * callers read the object they were given and must never assign to its keys.
  */
 export const readUnknownRecord = (value: unknown): UnknownRecord | null =>
-  isObjectRecordValue(value) ? Object.fromEntries(Object.entries(value)) : null;
+  isObjectRecordValue(value) ? value : null;
 
 /**
  * Parse `value` as a string-keyed record, tolerating non-records as `{}`.
