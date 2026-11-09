@@ -257,6 +257,34 @@ The same tools are available to MCP clients over streamable HTTP at `https://pod
 
 Claude Code: `claude mcp add --transport http podbenchmark https://podbenchmark.com/api/mcp`. Codex: `codex mcp add podbenchmark --url https://podbenchmark.com/api/mcp`. Manus: open Connectors, add a custom MCP server, and paste the URL. Cursor: install it from [cursor.directory](https://cursor.directory/plugins), or add the server to `~/.cursor/mcp.json` with the config above.
 
+## HTTP API
+
+The CLI, the MCP server and the Make app call the same public API. It needs no account or key.
+
+- `POST https://podbenchmark.com/api/v1/tools/<tool>` with the tool's input as a JSON body.
+- `GET https://podbenchmark.com/api/v1/tools` lists every tool with its input and output as JSON Schema.
+
+```sh
+curl -X POST https://podbenchmark.com/api/v1/tools/compare_product \
+  -H 'content-type: application/json' \
+  -d '{"canonicalProductId": "bella-canvas-3001", "destination": "GB", "currency": "GBP", "choices": {"size": "m", "color": "black"}}'
+```
+
+| Tool | Answers |
+| --- | --- |
+| `search_products` | Products by words, category, brand, supplier, audience and specs, with a starting delivered price. Pages with `limit` (up to 50) and `offset`; `nextOffset` is `null` on the last page. |
+| `list_categories` | Categories with product counts and starting prices. Pages like `search_products`. |
+| `get_product` | A product's specs, print methods, questions and similar products. |
+| `get_product_options` | The sizes, colors and other choices a product comes in, as options with a `key` and `choices`. Pages with `limit` (up to 100) and `offset`. |
+| `compare_product` | Every supplier's product cost, shipping, delivered total and delivery days for one option (`optionKey` or `choices`). Add `sellingPrice` or `targetMargin` with `salesChannel` and `shopLocation` for what you keep. |
+| `resolve_supplier_link` | The product behind a supplier's product link. |
+| `list_suppliers` | Suppliers we compare. |
+| `get_supplier` | A supplier's plans, fees, branding, support, print locations and print providers. |
+| `get_supplier_prices` | Where a supplier is cheapest, overall, by category or against one other supplier. |
+| `supplier_guide` | Suppliers that fit a product type and shop, with dated reasons. |
+
+Every answer is `{"ok": true, …}`, or `{"ok": false, "error": {"code", "message", "retryable"}}` with an HTTP error status: `invalid_input` (400), `invalid_option` (422), `not_found` or `product_not_found` (404), `rate_limited` (429, with `Retry-After`) and `unavailable` (503). An optional field sent as `null`, `""` or `{}` counts as not sent. Each client can make 120 requests a minute.
+
 ## Exit codes
 
 | Code | Meaning |
