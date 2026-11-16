@@ -58,6 +58,8 @@ export class CliFailure extends Data.TaggedError("CliFailure")<{
   readonly body?: JsonValue;
   /** Extra lines printed after the message, such as a list of matches. */
   readonly details?: readonly string[];
+  /** The failure this one narrows, kept for debugging. */
+  readonly cause?: unknown;
 }> {}
 
 export const usageFailure = (message: string, hint?: string) =>

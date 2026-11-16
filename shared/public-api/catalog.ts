@@ -1,8 +1,9 @@
 import { z } from "zod";
 import { CurrencySchema } from "../pricing/schema";
 import { canonicalPathSegmentSchema } from "../product-search/identity-schema";
-import { TARGET_DESTINATIONS } from "../runtime/enums";
+import { TARGET_DESTINATIONS } from "../kernel/enums";
 import { SPEC_FACETS } from "../site/spec-facets";
+import { CATEGORIES_PAGE_LIMIT_MAX } from "../site/contracts";
 import {
   destinationSchema,
   optionalCurrencySchema,
@@ -126,7 +127,12 @@ export const listCategoriesInputSchema = z.strictObject({
   destination: destinationSchema.default("US"),
   currency: optionalCurrencySchema,
   ...pageInputShape,
-  limit: z.number().int().min(1).max(100).default(50),
+  limit: z
+    .number()
+    .int()
+    .min(1)
+    .max(CATEGORIES_PAGE_LIMIT_MAX)
+    .default(50),
 });
 export const listCategoriesOutputSchema = publicResult({
   destination: z.enum(TARGET_DESTINATIONS),

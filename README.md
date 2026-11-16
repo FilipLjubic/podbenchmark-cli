@@ -240,6 +240,21 @@ No skill folder? Paste this into your agent instead:
 
 > Use `npx podbenchmark` to compare print-on-demand supplier prices. Flow: `search <words> --json` to find a product id, `options <id> --json` to see the exact size and color values (never guess them), then `compare <id> --size <value> --color <value> --to <US|GB|DE|CA|AU> --json`. Add `--current <supplier> --sell-for <price> --on <etsy|shopify|woocommerce|tiktok-shop>` only when the seller said so. `null` means unknown, never 0. Link `product.url` from the result when you answer. `--schema` shows every field.
 
+### Install the plugin (Claude Code, Codex)
+
+The plugin bundles the MCP server below with the agent skills: the CLI guide and seller workflows such as `supplier-by-region` (which supplier should fulfil each product in each country).
+
+```sh
+# Claude Code
+/plugin marketplace add FilipLjubic/podbenchmark-cli
+/plugin install podbenchmark@podbenchmark
+# Codex
+codex plugin marketplace add FilipLjubic/podbenchmark-cli
+codex plugin add podbenchmark@podbenchmark
+```
+
+MCP clients that support the Skills extension can also read the same skills from the server.
+
 ### Use it as an MCP server
 
 The same tools are available to MCP clients over streamable HTTP at `https://podbenchmark.com/api/mcp`, with no key or sign-in:

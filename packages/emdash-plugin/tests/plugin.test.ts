@@ -22,6 +22,7 @@ afterEach(async () => {
 describe("manifest", () => {
 	it("exposes every tool on its own route, with defaulted fields optional", async () => {
 		host = await createPluginTestHost();
+		// oxlint-disable-next-line anti-slop/no-chained-type-assertions -- the test host types the manifest loosely; this reads the emitted JSON shape
 		const { mcp, routes } = host.manifest as unknown as {
 			mcp: { tools: Array<{ name: string; route: string; inputSchema: { required?: string[] } }> };
 			routes: Array<string | { name: string }>;

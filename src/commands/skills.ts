@@ -177,11 +177,12 @@ const addCommand = Command.make(
               config.force
             ).pipe(
               Effect.mapError(
-                () =>
+                cause =>
                   new CliFailure({
                     exitCode: EXIT.usage,
                     message: `Could not write the skill for ${agent} under ${folder}.`,
                     hint: "Check that the folder is writable.",
+                    cause,
                   })
               )
             )

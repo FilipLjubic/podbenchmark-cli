@@ -1,5 +1,6 @@
 import type { z } from "zod";
-import { formatSupplierList } from "../runtime/suppliers";
+import { TARGET_DESTINATIONS } from "../kernel/enums";
+import { formatSupplierList } from "../kernel/suppliers";
 import {
   getProductInputSchema,
   getProductOutputSchema,
@@ -28,7 +29,7 @@ import {
 } from "./suppliers";
 
 const SUPPLIERS = formatSupplierList("and");
-const DESTINATIONS = "Supported destinations: US, GB, DE, AU, CA.";
+const DESTINATIONS = `Supported destinations: ${TARGET_DESTINATIONS.join(", ")}.`;
 
 /**
  * Every public capability. MCP registers each entry as a tool; the CLI maps
@@ -137,9 +138,6 @@ const allToolsListed: [UnlistedTools] extends [never] ? true : never = true;
 void allToolsListed;
 export type PublicToolInput<Name extends PublicToolName> = z.input<
   (typeof PUBLIC_TOOLS)[Name]["inputSchema"]
->;
-export type PublicToolOutput<Name extends PublicToolName> = z.output<
-  (typeof PUBLIC_TOOLS)[Name]["outputSchema"]
 >;
 /** Validated arguments for any tool, as sent to `/api/v1/tools/<name>`. */
 export type PublicToolArguments = {

@@ -1,6 +1,11 @@
 import { isProvisionalPriceSource } from "./provisional.ts";
+import {
+  PRINTFUL_POLICY_ID,
+  PRINTFUL_POLICY_VERSION,
+  PRINTFUL_ROUNDING_POLICY_ID,
+} from "./policies.ts";
 import { readUnknownRecord } from "../schemas/record.ts";
-import { SUPPORTED_CURRENCIES, type Currency } from "../runtime/fx/types";
+import { SUPPORTED_CURRENCIES, type Currency } from "../market/fx/types";
 
 export const PRICE_AUTHORITIES = [
   "supplier_quote",
@@ -94,9 +99,9 @@ export function resolveStoredPriceOrigin(
       authority: "supplier_model",
       priceSource: "printful-three-tier-model",
       sourceCurrency: "USD",
-      pricePolicyId: "printful-three-tier",
-      pricePolicyVersion: "v1",
-      roundingPolicyId: "nearest-quarter",
+      pricePolicyId: PRINTFUL_POLICY_ID,
+      pricePolicyVersion: PRINTFUL_POLICY_VERSION,
+      roundingPolicyId: PRINTFUL_ROUNDING_POLICY_ID,
       fxSnapshotId: null,
     };
   }

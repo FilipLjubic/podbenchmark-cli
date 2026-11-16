@@ -1,7 +1,7 @@
 import { Console, Effect, Option } from "effect";
 import type { z } from "zod";
-import type { Currency } from "shared/runtime/fx/types";
-import type { Destination } from "shared/runtime/enums";
+import type { Currency } from "shared/market/fx/types";
+import type { Destination } from "shared/kernel/enums";
 import { apiOrigin, makeApi, type ApiClient } from "./api";
 import { bodyForExit, CliFailure, type JsonValue } from "./failure";
 import { root } from "./root";

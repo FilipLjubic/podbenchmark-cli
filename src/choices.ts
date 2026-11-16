@@ -3,7 +3,7 @@ import { Flag } from "effect/cli";
 import {
   VARIANT_PICKER_DIMENSIONS,
   type VariantPickerDimension,
-} from "shared/runtime/variant-picker-policy";
+} from "shared/options/variant-picker-policy";
 
 /** `pageCount` → `page-count`. */
 export const kebab = (field: string) =>

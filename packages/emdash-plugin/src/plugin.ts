@@ -61,6 +61,7 @@ for (const tool of tools) {
 		route,
 		// The plugin CLI writes a JSON Schema object into the manifest as-is
 		// (it accepts "Zod schemas or JSON Schema objects"); the type only names Zod.
+		// oxlint-disable-next-line anti-slop/no-chained-type-assertions -- the SDK type omits the JSON Schema form it accepts
 		input: tool.inputSchema as unknown as SandboxedMcpTool["input"],
 		destructive: false,
 	};

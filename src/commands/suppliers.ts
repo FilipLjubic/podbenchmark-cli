@@ -17,7 +17,7 @@ import {
 import { renderTable } from "../render/table";
 import { present, withSession, type Session } from "../session";
 import { z } from "zod";
-import { formatSupplierList } from "shared/runtime/suppliers";
+import { formatSupplierList } from "shared/kernel/suppliers";
 
 const suppliersOk = PUBLIC_TOOLS.list_suppliers.outputSchema.options[0];
 const supplierOk = PUBLIC_TOOLS.get_supplier.outputSchema.options[0];

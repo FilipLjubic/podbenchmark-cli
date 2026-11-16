@@ -1,4 +1,4 @@
-import { isSupplierId, SUPPLIER_NAMES } from "shared/runtime/suppliers";
+import { isSupplierId, SUPPLIER_NAMES } from "shared/kernel/suppliers";
 
 const formatters = new Map<string, Intl.NumberFormat>();
 const formatter = (currency: string) => {

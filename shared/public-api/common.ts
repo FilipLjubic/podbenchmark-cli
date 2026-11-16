@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { CurrencySchema } from "../pricing/schema";
-import { TARGET_DESTINATIONS } from "../runtime/enums";
-import { SUPPLIER_IDS } from "../runtime/suppliers";
+import { TARGET_DESTINATIONS } from "../kernel/enums";
+import { SUPPLIER_IDS } from "../kernel/suppliers";
 
 /**
  * The public API is the one contract behind the public MCP tools and the npm
@@ -16,7 +16,6 @@ export const PUBLIC_API_AGENT_HEADER = "X-Podbenchmark-Agent";
 export const PUBLIC_API_CLIENT_HEADER = "X-Podbenchmark-Client";
 
 export const PUBLIC_SUPPLIER_IDS = SUPPLIER_IDS;
-export type PublicSupplierId = (typeof PUBLIC_SUPPLIER_IDS)[number];
 
 export const publicIdSchema = z.string().trim().min(1).max(200);
 export const destinationSchema = z
@@ -27,10 +26,6 @@ export const optionalCurrencySchema = CurrencySchema.optional().describe(
 );
 export const supplierIdSchema = z.enum(PUBLIC_SUPPLIER_IDS);
 
-/** Supplier pricing plans: standard, then each supplier's paid tiers. */
-export const PUBLIC_PRICING_TIERS = ["base", "tier1", "tier2"] as const;
-export type PublicPricingTier = (typeof PUBLIC_PRICING_TIERS)[number];
-
 export const pageInputShape = {
   limit: z.number().int().min(1).max(50).default(10),
   offset: z.number().int().min(0).max(100000).default(0),
@@ -40,7 +35,7 @@ export const pageOutputShape = {
   nextOffset: z.number().int().nonnegative().nullable(),
 };
 
-export const PUBLIC_ERROR_CODES = [
+const PUBLIC_ERROR_CODES = [
   "invalid_input",
   "not_found",
   "product_not_found",

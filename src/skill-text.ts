@@ -1,4 +1,4 @@
-import { formatSupplierList } from "shared/runtime/suppliers";
+import { formatSupplierList } from "shared/kernel/suppliers";
 import { VERSION } from "./api";
 
 export const SKILL_NAME = "podbenchmark";

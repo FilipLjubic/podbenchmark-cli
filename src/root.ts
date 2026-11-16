@@ -1,4 +1,5 @@
 import { Command, Flag } from "effect/cli";
+import { CLI_SHARED_FLAGS } from "shared/cli/shared-flags";
 
 /**
  * The flags every command accepts, before or after the command name. Commands
@@ -28,48 +29,36 @@ export const root = Command.make("podbenchmark").pipe(
     },
   ]),
   Command.withSharedFlags({
-    to: Flag.String("to").pipe(
-      Flag.withDescription(
-        "Where the buyer lives: US, GB, DE, CA or AU (default US)."
-      ),
+    to: Flag.String(CLI_SHARED_FLAGS.to.name).pipe(
+      Flag.withDescription(CLI_SHARED_FLAGS.to.description),
       Flag.optional
     ),
-    currency: Flag.String("currency").pipe(
-      Flag.withDescription(
-        "Currency for every price: USD, EUR, GBP, CAD or AUD (default: the destination's own)."
-      ),
+    currency: Flag.String(CLI_SHARED_FLAGS.currency.name).pipe(
+      Flag.withDescription(CLI_SHARED_FLAGS.currency.description),
       Flag.optional
     ),
-    json: Flag.Boolean("json").pipe(
-      Flag.withDescription(
-        "Print the result as JSON, exactly as the service returns it."
-      ),
+    json: Flag.Boolean(CLI_SHARED_FLAGS.json.name).pipe(
+      Flag.withDescription(CLI_SHARED_FLAGS.json.description),
       Flag.withDefault(false)
     ),
-    table: Flag.Boolean("table").pipe(
-      Flag.withDescription(
-        "Print tables even when output is piped or an agent is detected."
-      ),
+    table: Flag.Boolean(CLI_SHARED_FLAGS.table.name).pipe(
+      Flag.withDescription(CLI_SHARED_FLAGS.table.description),
       Flag.withDefault(false)
     ),
-    schema: Flag.Boolean("schema").pipe(
-      Flag.withDescription(
-        "Print the JSON Schema of this command's input and output, then exit."
-      ),
+    schema: Flag.Boolean(CLI_SHARED_FLAGS.schema.name).pipe(
+      Flag.withDescription(CLI_SHARED_FLAGS.schema.description),
       Flag.withDefault(false)
     ),
-    dryRun: Flag.Boolean("dry-run").pipe(
-      Flag.withDescription(
-        "Print the request that would be sent, without sending it."
-      ),
+    dryRun: Flag.Boolean(CLI_SHARED_FLAGS.dryRun.name).pipe(
+      Flag.withDescription(CLI_SHARED_FLAGS.dryRun.description),
       Flag.withDefault(false)
     ),
-    limit: Flag.Int("limit").pipe(
-      Flag.withDescription("How many results to show."),
+    limit: Flag.Int(CLI_SHARED_FLAGS.limit.name).pipe(
+      Flag.withDescription(CLI_SHARED_FLAGS.limit.description),
       Flag.optional
     ),
-    offset: Flag.Int("offset").pipe(
-      Flag.withDescription("How many results to skip."),
+    offset: Flag.Int(CLI_SHARED_FLAGS.offset.name).pipe(
+      Flag.withDescription(CLI_SHARED_FLAGS.offset.description),
       Flag.optional
     ),
   })

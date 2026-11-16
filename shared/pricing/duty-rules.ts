@@ -1,6 +1,7 @@
-import { convertPrice } from "../runtime/fx/convert";
+import { convertPrice } from "../market/fx/convert";
+import { SUPPORTED_CURRENCIES } from "../market/fx/types";
 import { readUnknownRecord } from "../schemas/record";
-import type { Currency, FxContext } from "../runtime/fx/types";
+import type { Currency, FxContext } from "../market/fx/types";
 
 /**
  * Seller-billed duty: a charge the supplier bills the seller on top of
@@ -24,10 +25,11 @@ export type SupplierDutyEstimateProjection = {
 	converted: { min: number; max: number; currency: Currency } | null;
 };
 
-const DUTY_CURRENCIES: readonly string[] = ["USD", "EUR", "GBP", "AUD", "CAD"];
-
-export function isDutyCurrency(value: unknown): value is Currency {
-	return typeof value === "string" && DUTY_CURRENCIES.includes(value);
+function isDutyCurrency(value: unknown): value is Currency {
+	return (
+		typeof value === "string" &&
+		SUPPORTED_CURRENCIES.some((currency) => currency === value)
+	);
 }
 
 /** A non-negative amount that is a whole number of minor units. */
@@ -131,7 +133,7 @@ type SellerDutyEvidenceBase = {
 	destination: string;
 	/**
 	 * The reviewed source a documented outcome rests on: an evidence id from
-	 * `shared/runtime/tax-treatment.ts`, e.g. `fourthwall-tax`.
+	 * `shared/pricing/tax-treatment.ts`, e.g. `fourthwall-tax`.
 	 */
 	evidenceId?: string;
 	/** The supplier's own charge, in the currency its rule is written in. */

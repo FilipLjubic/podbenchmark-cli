@@ -1,5 +1,5 @@
-import type { Destination } from "../runtime/enums";
-import type { Currency } from "../runtime/fx/types";
+import type { Destination } from "../kernel/enums";
+import type { Currency } from "../market/fx/types";
 import type { z } from "zod";
 import type {
   RelativeRatesPolicyModelSchema,

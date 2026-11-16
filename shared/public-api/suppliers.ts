@@ -1,6 +1,8 @@
 import { z } from "zod";
+import { PRICING_TIER_KEYS } from "../pricing/types";
 import { CurrencySchema } from "../pricing/schema";
-import { TARGET_DESTINATIONS } from "../runtime/enums";
+import { TARGET_DESTINATIONS } from "../kernel/enums";
+import { SALES_CHANNELS } from "../sales-channel-fees/channels";
 import {
   destinationSchema,
   optionalCurrencySchema,
@@ -9,7 +11,6 @@ import {
   publicIdSchema,
   publicResult,
   supplierIdSchema,
-  PUBLIC_PRICING_TIERS,
 } from "./common";
 
 const supplierSchema = z.strictObject({
@@ -122,7 +123,7 @@ export const getSupplierPricesInputSchema = z.strictObject({
     ])
     .default({ kind: "amount", amount: 1 })
     .describe("How close to the cheapest still counts as near-cheapest."),
-  pricingTier: z.enum(PUBLIC_PRICING_TIERS).default("base"),
+  pricingTier: z.enum(PRICING_TIER_KEYS).default("base"),
   destination: destinationSchema.default("US"),
   currency: optionalCurrencySchema,
   ...pageInputShape,
@@ -179,7 +180,7 @@ export const supplierGuideInputSchema = z.strictObject({
   productType: z.enum(SUPPLIER_GUIDE_PRODUCT_TYPES).default("t-shirts"),
   destination: destinationSchema.default("US"),
   salesChannel: z
-    .enum(["shopify", "etsy", "woocommerce", "tiktok-shop"])
+    .enum(SALES_CHANNELS)
     .optional()
     .describe("Where the seller sells. Leave out if they haven't decided."),
   shopLocation: z.enum(TARGET_DESTINATIONS).optional(),

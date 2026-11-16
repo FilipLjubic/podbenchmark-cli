@@ -1,0 +1,16 @@
+{
+  "name": "podbenchmark",
+  "description": "POD Benchmark: print-on-demand supplier comparison tools and seller workflow skills.",
+  "owner": {
+    "name": "Filip Ljubic",
+    "url": "https://podbenchmark.com"
+  },
+  "plugins": [
+    {
+      "name": "podbenchmark",
+      "source": "./",
+      "description": "Compare print-on-demand (POD) suppliers including Printify, Printful, Gelato, Prodigi, CustomCat, Fourthwall, Inkthreadable, Apliiq, Artelo and merchOne. Find which supplier costs less for T-shirts, hoodies and mugs by comparing product prices, shipping costs, total delivered cost and delivery estimates for your customers' country.",
+      "version": "0.1.2"
+    }
+  ]
+}

@@ -1,11 +1,11 @@
 import { Effect, FileSystem, Path } from "effect";
 import { z } from "zod";
 import { CurrencySchema } from "shared/pricing/schema";
-import { TARGET_DESTINATIONS } from "shared/runtime/enums";
+import { TARGET_DESTINATIONS } from "shared/kernel/enums";
 import { SALES_CHANNELS } from "shared/sales-channel-fees/channels";
 import { PUBLIC_SUPPLIER_IDS } from "shared/public-api/common";
 import { CliFailure, usageFailure } from "./failure";
-import type { Destination } from "shared/runtime/enums";
+import type { Destination } from "shared/kernel/enums";
 
 /** The currency a destination's buyers pay in. */
 export const DESTINATION_CURRENCY = {
@@ -185,11 +185,12 @@ export const writeConfigFile = (file: string, settings: Settings) =>
     yield* fs.writeFileString(file, `${JSON.stringify(settings, null, 2)}\n`);
   }).pipe(
     Effect.mapError(
-      () =>
+      cause =>
         new CliFailure({
           exitCode: 1,
           message: `Could not write ${file}.`,
           hint: "Check that the folder is writable.",
+          cause,
         })
     )
   );
@@ -200,7 +201,11 @@ export const removeConfigFile = (file: string) =>
     yield* fs.remove(file, { force: true });
   }).pipe(
     Effect.mapError(
-      () =>
-        new CliFailure({ exitCode: 1, message: `Could not remove ${file}.` })
+      cause =>
+        new CliFailure({
+          exitCode: 1,
+          message: `Could not remove ${file}.`,
+          cause,
+        })
     )
   );

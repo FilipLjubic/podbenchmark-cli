@@ -1,15 +1,16 @@
 import { z } from "zod";
+import { PRICING_TIER_KEYS } from "../pricing/types";
 import { CurrencySchema } from "../pricing/schema";
 import { supplierPricingContextSchema } from "../pricing/required-charges";
+import { supplierDutyEstimateProjectionSchema } from "../pricing/duty";
 import { canonicalPathSegmentSchema } from "../product-search/identity-schema";
-import { TARGET_DESTINATIONS } from "../runtime/enums";
+import { TARGET_DESTINATIONS } from "../kernel/enums";
 import { SALES_CHANNELS } from "../sales-channel-fees/channels";
 import {
   destinationSchema,
   publicErrorSchema,
   publicResult,
   supplierIdSchema,
-  PUBLIC_PRICING_TIERS,
 } from "./common";
 
 const choicesSchema = z
@@ -50,7 +51,7 @@ export const compareProductInputSchema = z
       .describe("An exact key from get_product_options."),
     choices: choicesSchema.optional(),
     pricingTier: z
-      .enum(PUBLIC_PRICING_TIERS)
+      .enum(PRICING_TIER_KEYS)
       .default("base")
       .describe(
         "base is each supplier's standard price; tier1 and tier2 are its paid plans."
@@ -124,18 +125,6 @@ const optionFieldSchema = z.strictObject({
   values: z.array(optionValueSchema),
 });
 
-const dutyRangeSchema = z.strictObject({
-  min: z.number().nonnegative(),
-  max: z.number().nonnegative(),
-  currency: CurrencySchema,
-});
-/** A modeled range for an amount the supplier has not confirmed; never exact. */
-const dutyEstimateSchema = z.strictObject({
-  native: dutyRangeSchema.extend({
-    basis: z.literal("line_net_x_compatible_product_rate"),
-  }),
-  converted: dutyRangeSchema.nullable(),
-});
 
 const feeComponentSchema = z.strictObject({
   label: z.string(),
@@ -176,7 +165,7 @@ const offerSchema = z.strictObject({
   shipping: z.number().nonnegative().nullable(),
   duty: z.number().nonnegative().nullable(),
   dutyOutcome: z.enum(["charged", "not_applicable", "estimated", "unknown"]).nullable().optional(),
-  dutyEstimate: dutyEstimateSchema.nullable().optional(),
+  dutyEstimate: supplierDutyEstimateProjectionSchema.nullable().optional(),
   priceBasis: z.literal("product-and-shipping"),
   dutySource: z
     .object({ amount: z.number().nonnegative(), currency: CurrencySchema })
@@ -267,7 +256,7 @@ export const compareProductOutputSchema = publicResult({
   }),
   destination: z.enum(TARGET_DESTINATIONS),
   currency: CurrencySchema,
-  pricingTier: z.enum(PUBLIC_PRICING_TIERS),
+  pricingTier: z.enum(PRICING_TIER_KEYS),
   optionKey: z.string().nullable(),
   optionLabel: z.string().nullable(),
   /** The selected option by field, such as { size: "Adult M", color: "Black" }. */

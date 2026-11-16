@@ -1,7 +1,7 @@
 import { effectiveEmbroidery } from "./pricing-context";
 import { z } from "zod";
 
-import { SUPPORTED_CURRENCIES } from "../runtime/fx/types";
+import { SUPPORTED_CURRENCIES } from "../market/fx/types";
 import { PRICE_AUTHORITIES } from "./authority";
 import { readSupplierDutyEstimate } from "./duty";
 import {

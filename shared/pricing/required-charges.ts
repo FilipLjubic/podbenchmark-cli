@@ -1,5 +1,6 @@
 import { effectiveEmbroidery } from "./pricing-context";
 import { z } from "zod";
+import { SUPPORTED_CURRENCIES } from "../market/fx/types";
 import {
   EXISTING_SUPPLIER_DESIGN_BASIS,
   INCLUDED_SUPPLIER_DIGITISATION_BASIS,
@@ -36,14 +37,14 @@ const setupFeeSchema = z.strictObject({
   kind: z.enum(["standard", "text-only", "image", "adjustment", "back-or-side", "setup"]),
   amount: z.number().finite().nonnegative(),
   /** Original supplier currency; never converted along with the unit price. */
-  currency: z.enum(["USD", "EUR", "GBP", "AUD", "CAD"]),
+  currency: z.enum(SUPPORTED_CURRENCIES),
   taxBasis: z.enum(["ex-vat", "unknown"]),
   scope: z.enum(["per-design", "per-design-and-area", "per-order", "per-unit", "unknown"]),
   source: evidenceText,
   conditions: conditionsSchema,
 });
 
-export const newDesignSetupSchema = z.discriminatedUnion("status", [
+const newDesignSetupSchema = z.discriminatedUnion("status", [
   z.strictObject({
     status: z.literal("listed"),
     fees: z.array(setupFeeSchema).min(1).max(8),
@@ -99,7 +100,7 @@ export const supplierPricingContextSchema = z
 
 export type SupplierPricingContext = z.infer<typeof supplierPricingContextSchema>;
 
-export type SupplierPricingContextRead =
+type SupplierPricingContextRead =
   | { readonly status: "absent" }
   | { readonly status: "valid"; readonly context: SupplierPricingContext }
   | { readonly status: "invalid" };

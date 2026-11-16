@@ -3,7 +3,7 @@ import { Argument, Command, Flag } from "effect/cli";
 import { z } from "zod";
 import { PUBLIC_TOOLS } from "shared/public-api/tools";
 import { PUBLIC_SUPPLIER_IDS } from "shared/public-api/common";
-import { formatSupplierList } from "shared/runtime/suppliers";
+import { formatSupplierList } from "shared/kernel/suppliers";
 import { choicesFromFlags, dimensionFlags } from "../choices";
 import { CliFailure, EXIT, nothingFailure, usageFailure } from "../failure";
 import { parseInput } from "../input";
